@@ -1,0 +1,22 @@
+{
+  "name": "recast-sample-visitor",
+  "version": "0.0.0",
+  "description": "a sample visitor definition that should initially not work, but eventually recast will made to work with it as a way to determine the next visitor API for recast",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thedekel/recast-sample-visitor.git"
+  },
+  "keywords": [
+    "recast"
+  ],
+  "author": "thedekel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thedekel/recast-sample-visitor/issues"
+  },
+  "homepage": "https://github.com/thedekel/recast-sample-visitor"
+}
