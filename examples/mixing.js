@@ -14,7 +14,17 @@ var transformer2 = {
       traverse(replacementId); // traversal isn't really needed here
       return replacementId;
     },
-    visitFunctionExpression: function(node) {
+    visitFunctionExpression: function(node, traverse) {
+      var varDeclaration = b.variableDeclaration(
+        "var",
+        [b.variableDeclarator(
+          b.identifier("myVar"),
+          b.literal(5)
+        )]
+      );
+      node.body.body.unshift()
+      traverse(node);
+      return node;
     }
   }
 };
