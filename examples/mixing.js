@@ -1,5 +1,4 @@
 // This is an example of mixing multiple transformers
-
 var recast = require('recast');
 var b = recast.builders;
 var n = recast.nodeNames;
@@ -22,7 +21,7 @@ var transformer2 = {
           b.literal(5)
         )]
       );
-      node.body.body.unshift()
+      node.body.body.unshift(varDeclaration);
       return nodePath.traverse();
     }
   }
@@ -34,7 +33,7 @@ var resolveVisitorConflicts = function(node, nodeName) {
   // n.nodeName.check should be sufficient, i'm not sure if having `nodeName`
   // as a parameter is needed or a good idea
   if (n.functionExpression.check(node)) {
-    return recast.chainVisitors(transformer2, transformer1 /*[, transformer3, ...]*/)
+    return recast.chainVisitors(transformer2, transformer1 /*[, etc.]*/)
   } else if(n.identifier.check(node)) {
     return null; // return non-function in order to do nothing for a node type
   } else { // default behavior
@@ -42,8 +41,11 @@ var resolveVisitorConflicts = function(node, nodeName) {
   }
 };
 
-// the visitors object should only define cases where a collision otherwise occurs
+// the visitors object should define cases where a collision otherwise occurs
 var visitors = recast.mixVisitors(resolveVisitorConflicts);
+
+// alternatively, you can run two visitors per node one after the other:
+var altVisitors = recast.chainVisitors(transformer1, transformer2);
 
 function transform(ast) {
   var visitedAst = recast.visitMixed(ast, visitors);

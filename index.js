@@ -1,5 +1,5 @@
 var recast = require('recast');
-var b = recast.builders; // more naturals than importing builders from ast-types
+var b = recast.builders; // more natural than importing builders from ast-types
 
 var visitors = {
   visitNode: visitNode,
