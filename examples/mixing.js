@@ -1,7 +1,7 @@
 // This is an example of mixing multiple transformers
 var recast = require('recast');
 var b = recast.builders;
-var n = recast.nodeNames;
+var n = recast.namedTypes;
 
 // mix the main transformer from this repo, with a simple set of visitors
 // in the guise of a transformer
@@ -54,6 +54,6 @@ function transform(ast) {
 module.exports = {
   transform: transform,
   parse: recast.genParse(transform),
-  compile: recsat.genCompile(transform),
+  compile: recast.genCompile(transform),
   visitors: visitors
 };

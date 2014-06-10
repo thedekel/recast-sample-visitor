@@ -19,7 +19,7 @@ function visitFunctionExpression(nodePath) {
   //this visitor will replace functions that have a `rest` param with a function
   //that doesn't have the rest param, but instead has its name changed.
   if (nodePath.value.rest) {
-    var newNode = recast.b.functionExpression(
+    var newNode = b.functionExpression(
       b.identifier(node.id.name + "WithoutRest"),
       node.params,
       node.body,
@@ -41,6 +41,6 @@ function transform(ast) {
 module.exports = {
   transform: transform,
   parse: recast.genParse(transform),
-  compile: recsat.genCompile(transform),
+  compile: recast.genCompile(transform),
   visitors: visitors
 };
