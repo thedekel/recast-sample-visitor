@@ -9,12 +9,12 @@ var n = recast.nodeNames;
 var transformer1 = require('../index');
 var transformer2 = {
   visitors: {
-    visitIdentifier: function(node, traverse) {
+    visitIdentifier: function(nodePath) {
       var replacementId = b.identifier(node.name + "__modified");
       traverse(replacementId); // traversal isn't really needed here
       return replacementId;
     },
-    visitFunctionExpression: function(node, traverse) {
+    visitFunctionExpression: function(nodePath) {
       var varDeclaration = b.variableDeclaration(
         "var",
         [b.variableDeclarator(
@@ -23,8 +23,7 @@ var transformer2 = {
         )]
       );
       node.body.body.unshift()
-      traverse(node);
-      return node;
+      return nodePath.traverse();
     }
   }
 };
@@ -50,24 +49,9 @@ function transform(ast) {
   var visitedAst = recast.visitMixed(ast, visitors);
   return visitedAst;
 }
-
-function parse(code) {
-  var baseAst = recast.parse(code);
-  return transform(baseAst);
-}
-
-function compile(code, pretty) {
-  var baseAst = recast.parse(code);
-  var modifiedAst =  transform(baseAst);
-  if (pretty) {
-    return recsat.prettyPrint(modifiedAst);
-  }
-  return recast.print(modifiedAst);
-}
-
 module.exports = {
   transform: transform,
-  parse: parse,
-  compile: compile,
+  parse: recast.genParse(transform),
+  compile: recsat.genCompile(transform),
   visitors: visitors
 };

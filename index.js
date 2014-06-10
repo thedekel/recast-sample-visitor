@@ -6,15 +6,19 @@ var visitors = {
   visitFunctionExpression: visitFunctionExpression
 };
 
-function visitNode(node, traverse) {
-  traverse(node);
-  return node; // maybe even `return traverse(node);`
+function visitNode(nodePath) {
+  // this might be a good way to do logging by iterating on every node
+  // although in this case, you probably only need `visitIdentifier`
+  if (nodePath.value.name && nodePath.value.name === "foo") {
+    console.log("detected a node named 'foo'");
+  }
+  return nodePath.traverse();
 }
 
-function visitFunctionExpression(node, traverse) {
+function visitFunctionExpression(nodePath) {
   //this visitor will replace functions that have a `rest` param with a function
   //that doesn't have the rest param, but instead has its name changed.
-  if (node.rest) {
+  if (nodePath.value.rest) {
     var newNode = recast.b.functionExpression(
       b.identifier(node.id.name + "WithoutRest"),
       node.params,
@@ -22,12 +26,10 @@ function visitFunctionExpression(node, traverse) {
       node.generator,
       node.expression
     );
-    traverse(newNode); // in-order traversal creates the replacement node, and
-                       // only then traverses it
-    return newNode;
+    // calling replace on nodePath removes the need to call `traverse`
+    return nodePath.replace(newNode); 
   } else {
-    traverse(node);
-    return node;
+    return nodePath.traverse();
   }
 }
 
@@ -36,24 +38,9 @@ function transform(ast) {
   return visitedAst;
 }
 
-// I think that parse and compile can be defined automatically by recast
-function parse(code) {
-  var baseAst = recast.parse(code);
-  return transform(baseAst);
-}
-
-function compile(code, pretty) {
-  var baseAst = recast.parse(code);
-  var modifiedAst =  transform(baseAst);
-  if (pretty) {
-    return recsat.prettyPrint(modifiedAst);
-  }
-  return recast.print(modifiedAst);
-}
-
 module.exports = {
   transform: transform,
-  parse: parse,
-  compile: compile,
+  parse: recast.genParse(transform),
+  compile: recsat.genCompile(transform),
   visitors: visitors
 };
